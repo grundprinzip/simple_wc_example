@@ -40,7 +40,7 @@ parser: json_parser.yy
 	/usr/local/bin/bison -d -v json_parser.yy
 	$(CXX) $(CXXFLAGS) -c -o parser.o json_parser.tab.cc
 
-lexer: json_lexer.l
+lexer: json_lexer.ll
 	flex -ojson_lexer.yy.cc  $<
 	$(CXX)  $(CXXFLAGS) -c json_lexer.yy.cc -o lexer.o
 

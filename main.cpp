@@ -8,9 +8,12 @@ main(const int argc, const char **argv)
 {
    if(argc != 2 ) 
       return ( EXIT_FAILURE );
-   JSON::MC_Driver driver;
    
-   driver.parse( argv[1] );
+
+   JSON::JsonDriver driver;
+   
+   std::string tt = "Hallow Welt";
+   driver.parse( tt );
    
    std::cout << "Results\n";
    

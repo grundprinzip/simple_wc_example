@@ -2,25 +2,26 @@
 #define __MCDRIVER_HPP__ 1
 
 #include <string>
-#include "json_scanner.hpp"
+
 #include "json_parser.tab.hh"
+
+# define YY_DECL \
+JSON::JsonParser::symbol_type yylex (JSON::JsonDriver& driver)
+// ... and declare it for the parser's sake.
+YY_DECL;
 
 namespace JSON{
 
-class MC_Driver{
-public:
-   MC_Driver() : chars(0),
-                 words(0),
-                 lines(0),
-                 uppercase(0),
-                 lowercase(0),
-                 parser( nullptr ),
-                 scanner( nullptr ){};
+  class JsonDriver{
+  public:
+   JsonDriver(){};
 
-   virtual ~MC_Driver();
+   virtual ~JsonDriver();
 
-   void parse( const char *filename );
-  
+   void prepare_string ( const std::string s);
+   
+   void parse( const std::string& data);
+
 
    void add_upper();
    void add_lower();
@@ -29,15 +30,17 @@ public:
    void add_char();
 
    std::ostream& print(std::ostream &stream);
-private:
-   int chars;
-   int words;
-   int lines;
-   int uppercase;
-   int lowercase;
-   JSON::MC_Parser *parser;
-   JSON::MC_Scanner *scanner;
-};
+ private:
+
+   bool trace_parsing = false;
+   bool trace_scanning = false;
+
+   int chars = 0;
+   int words = 0;
+   int lines = 0;
+   int uppercase = 0;
+   int lowercase = 0;   
+ };
 
 } /* end namespace MC */
 #endif /* END __MCDRIVER_HPP__ */

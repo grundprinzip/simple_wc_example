@@ -5,31 +5,23 @@
 #include <FlexLexer.h>
 #endif
 
-#undef  YY_DECL
-#define YY_DECL int  JSON::MC_Scanner::yylex()
+// # define YY_DECL \
+//   JSON::JsonParser::symbol_type JSON::JsonScanner::yylex ()
 
 #include "json_parser.tab.hh"
 
+
 namespace JSON{
 
-class MC_Scanner : public yyFlexLexer{
+class JsonScanner : public yyFlexLexer{
 public:
-   
-   MC_Scanner(std::istream *in) : yyFlexLexer(in),
-                                  yylval( nullptr ){};
-   
-   int yylex(JSON::MC_Parser::semantic_type *lval)
-   {
-      yylval = lval;
-      return( yylex() ); 
-   }
    
 
 private:
-   /* hide this one from public view */
-   int yylex();
-   /* yyval ptr */
-   JSON::MC_Parser::semantic_type *yylval;
+   // /* hide this one from public view */
+   //JsonParser::symbol_type yylex();
+   // /* yyval ptr */
+   // JSON::JsonParser::semantic_type *yylval;
 };
 
 } /* end namespace MC */
