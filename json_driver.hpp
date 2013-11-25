@@ -2,10 +2,10 @@
 #define __MCDRIVER_HPP__ 1
 
 #include <string>
-#include "mc_scanner.hpp"
-#include "mc_parser.tab.hh"
+#include "json_scanner.hpp"
+#include "json_parser.tab.hh"
 
-namespace MC{
+namespace JSON{
 
 class MC_Driver{
 public:
@@ -35,8 +35,8 @@ private:
    int lines;
    int uppercase;
    int lowercase;
-   MC::MC_Parser *parser;
-   MC::MC_Scanner *scanner;
+   JSON::MC_Parser *parser;
+   JSON::MC_Scanner *scanner;
 };
 
 } /* end namespace MC */

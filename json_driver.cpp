@@ -2,9 +2,9 @@
 #include <fstream>
 #include <cassert>
 
-#include "mc_driver.hpp"
+#include "json_driver.hpp"
 
-MC::MC_Driver::~MC_Driver(){ 
+JSON::MC_Driver::~MC_Driver(){ 
    delete(scanner);
    scanner = nullptr;
    delete(parser);
@@ -12,7 +12,7 @@ MC::MC_Driver::~MC_Driver(){
 }
 
 void 
-MC::MC_Driver::parse( const char *filename )
+JSON::MC_Driver::parse( const char *filename )
 {
    assert( filename != nullptr );
    std::ifstream in_file( filename );
@@ -21,7 +21,7 @@ MC::MC_Driver::parse( const char *filename )
    delete(scanner);
    try
    {
-      scanner = new MC::MC_Scanner( &in_file );
+      scanner = new JSON::MC_Scanner( &in_file );
    }
    catch( std::bad_alloc &ba )
    {
@@ -33,7 +33,7 @@ MC::MC_Driver::parse( const char *filename )
    delete(parser); 
    try
    {
-      parser = new MC::MC_Parser( (*scanner) /* scanner */, 
+      parser = new JSON::MC_Parser( (*scanner) /* scanner */, 
                                   (*this) /* driver */ );
    }
    catch( std::bad_alloc &ba )
@@ -50,7 +50,7 @@ MC::MC_Driver::parse( const char *filename )
 }
 
 void 
-MC::MC_Driver::add_upper()
+JSON::MC_Driver::add_upper()
 { 
    uppercase++; 
    chars++; 
@@ -58,7 +58,7 @@ MC::MC_Driver::add_upper()
 }
 
 void 
-MC::MC_Driver::add_lower()
+JSON::MC_Driver::add_lower()
 { 
    lowercase++; 
    chars++; 
@@ -66,7 +66,7 @@ MC::MC_Driver::add_lower()
 }
 
 void 
-MC::MC_Driver::add_word( const std::string &word )
+JSON::MC_Driver::add_word( const std::string &word )
 {
    words++; 
    chars += word.length();
@@ -83,21 +83,21 @@ MC::MC_Driver::add_word( const std::string &word )
 }
 
 void 
-MC::MC_Driver::add_newline()
+JSON::MC_Driver::add_newline()
 { 
    lines++; 
    chars++; 
 }
 
 void 
-MC::MC_Driver::add_char()
+JSON::MC_Driver::add_char()
 { 
    chars++; 
 }
 
 
 std::ostream& 
-MC::MC_Driver::print( std::ostream &stream )
+JSON::MC_Driver::print( std::ostream &stream )
 {
    stream << "Uppercase: " << uppercase << "\n";
    stream << "Lowercase: " << lowercase << "\n";

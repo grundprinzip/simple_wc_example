@@ -2,11 +2,11 @@
 %require  "3.0"
 %debug 
 %defines 
-%define api.namespace {MC}
+%define api.namespace {JSON}
 %define parser_class_name {MC_Parser}
 
 %code requires{
-   namespace MC {
+   namespace JSON {
       class MC_Driver;
       class MC_Scanner;
    }
@@ -24,12 +24,12 @@
    #include <fstream>
    
    /* include for all driver functions */
-   #include "mc_driver.hpp"
+   #include "json_driver.hpp"
   
    /* this is silly, but I can't figure out a way around */
-   static int yylex(MC::MC_Parser::semantic_type *yylval,
-                    MC::MC_Scanner  &scanner,
-                    MC::MC_Driver   &driver);
+   static int yylex(JSON::MC_Parser::semantic_type *yylval,
+                    JSON::MC_Scanner  &scanner,
+                    JSON::MC_Driver   &driver);
    
 }
 
@@ -71,18 +71,18 @@ item
 
 
 void 
-MC::MC_Parser::error( const std::string &err_message )
+JSON::MC_Parser::error( const std::string &err_message )
 {
    std::cerr << "Error: " << err_message << "\n"; 
 }
 
 
 /* include for access to scanner.yylex */
-#include "mc_scanner.hpp"
+#include "json_scanner.hpp"
 static int 
-yylex( MC::MC_Parser::semantic_type *yylval,
-       MC::MC_Scanner  &scanner,
-       MC::MC_Driver   &driver )
+yylex( JSON::MC_Parser::semantic_type *yylval,
+       JSON::MC_Scanner  &scanner,
+       JSON::MC_Driver   &driver )
 {
    return( scanner.yylex(yylval) );
 }

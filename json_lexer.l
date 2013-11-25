@@ -2,10 +2,12 @@
 /* C++ string header, for string ops below */
 #include <string>
 /* Implementation of yyFlexScanner */ 
-#include "mc_scanner.hpp"
+#include "json_scanner.hpp"
+
+using namespace std;
 
 /* typedef to make the returns for the tokens shorter */
-typedef MC::MC_Parser::token token;
+typedef JSON::MC_Parser::token token;
 
 /* define to keep from re-typing the same code over and over */
 #define STOKEN( x ) ( new std::string( x ) )
