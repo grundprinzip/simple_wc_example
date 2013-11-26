@@ -31,6 +31,7 @@ Value::Value(const string&& s) : string_v(move(s)), type_t(STRING) { }
 
 Value::Value(const Value& v)
 { 
+//    std::cerr << "Copy" << std::endl;
     switch(v.type())
     {
         /** Base types */
@@ -109,7 +110,7 @@ Value::Value( Value&& v)
             break;
         
         case OBJECT:
-            object_v = move(v.object_v);
+            object_v = std::move(v.object_v);
             v.object_v = nullptr;
             type_t = OBJECT;
             break;
@@ -194,13 +195,13 @@ Value& Value::operator=( Value&& v)
         
         /** Compound types */
             case ARRAY:
-            array_v = move(v.array_v);
+            array_v = std::move(v.array_v);
             v.array_v = nullptr;
             type_t = ARRAY;
             break;
         
         case OBJECT:
-            object_v = move(v.object_v);
+            object_v = std::move(v.object_v);
             v.object_v = nullptr;
             type_t = OBJECT;
             break;

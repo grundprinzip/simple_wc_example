@@ -10,8 +10,6 @@
 #include <memory>
 #include <cassert>
 
-#include <boost/container/map.hpp>
-#include <boost/container/flat_map.hpp>
 
 namespace JSON 
 {
@@ -33,7 +31,6 @@ namespace JSON
     {
     public:
 
-        //using map_t = boost::container::flat_map<std::string, Value>;
         using map_t = std::map<std::string, Value>;
         using vector_t = std::vector<Value>;
 

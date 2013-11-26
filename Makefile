@@ -1,19 +1,16 @@
-CC    ?= clang
-CXX   ?= clang++
+CC    = clang
+CXX   = clang++
+CXX   = /usr/lib/gcc-snapshot/bin/g++
 
 EXE = my_wc
 
 CDEBUG = -g -Wall
-
 CXXDEBUG = -g -Wall
-
-CSTD = -std=c99
 CXXSTD = -std=c++11
 
-CFLAGS = -O0  $(CDEBUG) $(CSTD) 
-CXXFLAGS = -O3 $(CXXSTD)
+CXXFLAGS = -O3 -DNDEBUG -g -Wall -ggdb $(CXXSTD)
 
-CXXPROD = -O3 -DNDEBUG
+CXXPROD = 
 
 
 CPPOBJ = main json_driver json_st
