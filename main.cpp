@@ -9,7 +9,7 @@ main(const int argc, const char **argv)
    if(argc != 2 ) 
       return ( EXIT_FAILURE );
    
-   std::string data = "{  \"priority\" : 1,   \"performance\": false,   \"operators\": {    \"0\": {       \"type\": \"NoOp\"     }   },  \"edges\": [[\"0\", \"0\"]]}";
+   std::string data = "{  \"priority\" : 1,   \"performance\": false,   \"operators\": {    \"0\": {       \"type\": \"NoOp\"     }   },  \"edges\": [[\"0\", \"1\"]]}";
    JSON::JsonDriver driver;
    
    size_t s = 0;
@@ -17,6 +17,8 @@ main(const int argc, const char **argv)
      driver.parse( data );
      s += driver.result["edges"].size();     
    }
+   // driver.parse(data);
+   // std::cout << driver.result << std::endl;
    std::cout << s << std::endl;
    return s;
 }

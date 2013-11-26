@@ -10,6 +10,8 @@
 #include <memory>
 #include <cassert>
 
+#include <boost/container/map.hpp>
+#include <boost/container/flat_map.hpp>
 
 namespace JSON 
 {
@@ -31,13 +33,25 @@ namespace JSON
     {
     public:
 
+        //using map_t = boost::container::flat_map<std::string, Value>;
         using map_t = std::map<std::string, Value>;
         using vector_t = std::vector<Value>;
 
         /** Default constructor (type = NIL). */
         Value();
 
-        Value(ValueType vt) : type_t(vt) {}
+        ~Value();
+
+        Value(ValueType vt) : type_t(vt) {
+            switch(vt) {
+                case ARRAY:
+                    array_v = new vector_t;
+                    break;
+                case OBJECT:
+                    object_v = new map_t;
+                    break;
+            }
+        }
     
         /** Copy constructor. */
         Value(const Value& v);
@@ -58,7 +72,7 @@ namespace JSON
         Value(const std::string& s);
     
         /** Move constructor. */
-        Value(const Value&& v);
+        Value( Value&& v);
     
         /** Move constructor from STD string  */
         Value(const std::string&& s);
@@ -73,7 +87,7 @@ namespace JSON
         Value& operator=(const Value& v);
     
         /** Move operator. */
-        Value& operator=(const Value&& v);
+        Value& operator=( Value&& v);
     
         /** Cast operator for float */
         operator float() const { return float_v; }
@@ -94,56 +108,58 @@ namespace JSON
         // Array Access Methods -> push_back, operator[], at()
         void push_back(Value& v) {
             type_check(ARRAY);
-            array_v.push_back(v);
+            (*array_v).push_back(v);
         }
 
         void push_back(Value&& v) {
             type_check(ARRAY);
-            array_v.push_back(std::move(v));
+            (*array_v).push_back(std::move(v));
         }
 
         Value& operator[] (size_t i) {
             type_check(ARRAY);
-            return array_v[i];
+            return (*array_v)[i];
         }
 
         const Value& operator[] (size_t i) const {
             type_check(ARRAY);
-            return array_v[i];  
+            return (*array_v)[i];  
         }
 
         Value& at(size_t i) {
             type_check(ARRAY);
-            return array_v.at(i);
+            return (*array_v).at(i);
         }
 
         const Value& at(size_t i) const {
             type_check(ARRAY);
-            return array_v.at(i);
+            return (*array_v).at(i);
         }
 
         // Object Methods
         // operator[], insert, emplace...
-        void emplace(const std::string& k, const Value& v) {
+        void emplace(std::string&& k, Value&& v) {
             type_check(OBJECT);
-            object_v.insert(std::make_pair(k, v));
+            (*object_v).emplace(k, v);
         }
 
         Value& operator[] (const std::string& k) {
             type_check(OBJECT);
-            return object_v[k];
+            return (*object_v)[k];
         }
 
         Value& operator[] (const char *k) {
             type_check(OBJECT);
-            return object_v[k];
+            return (*object_v)[k];
         }
 
         size_t size() const {
-            return type_t == ARRAY ? array_v.size() : object_v.size();
+            return type_t == ARRAY ? (*array_v).size() : (*object_v).size();
         }
 
         void print(std::ostream& out) const;
+
+        void dp() const;
 
     private:
 
@@ -151,20 +167,17 @@ namespace JSON
             assert(("Given type and requested type are not same", type_t == v));
         }
 
-
-
-
     protected:
     
 
 
         // Actual Value
-        double           float_v;
-        long             int_v;
-        bool             bool_v;
-        std::string     string_v;
-        map_t          object_v;
-        vector_t           array_v;
+        double           float_v = 0;
+        long             int_v = 0;
+        bool             bool_v = false;
+        std::string      string_v;
+        map_t            *object_v = nullptr;
+        vector_t         *array_v = nullptr;
 
         // Tag        
         ValueType       type_t;
@@ -173,5 +186,5 @@ namespace JSON
     };
 }
 
-std::ostream& operator<<(std::ostream& o, JSON::Value& v);
+std::ostream& operator<<(std::ostream& o, const JSON::Value& v);
 #endif

@@ -49,6 +49,7 @@
 %token CURLY_BRACKET_L CURLY_BRACKET_R
 %token COMMA COLON
 
+/** Types used to identify the actual values **/
 %type <JSON::Value> JsonObject JsonValue
 %type <JSON::Value> JsonMap JsonMapValueList
 %type <JSON::Value> JsonArray JsonArrayValueList
@@ -70,11 +71,11 @@ JsonMap                 :   CURLY_BRACKET_L JsonMapValueList CURLY_BRACKET_R  {
 JsonMapValueList        : /* empty */ { $$ = JSON::Value(JSON::OBJECT); }  
                         |  JSON_STRING COLON JsonValue                            { 
                            $$ = JSON::Value(JSON::OBJECT); 
-                           $$.emplace($1, $3);
+                           $$.emplace(std::move($1), std::move($3));
                            driver.log("JsonMapValueList: JsonMapValue"); 
                         } 
                         |  JsonMapValueList COMMA JSON_STRING COLON JsonValue     {
-                           $1.emplace($3, $5);
+                           $1.emplace(std::move($3), std::move($5));
                            $$ = std::move($1);
                            driver.log("JsonMapValueList: JsonMapValueList , JsonMapValue");
                         }
@@ -97,12 +98,12 @@ JsonArrayValueList      :   /* empty */ {
 
 JsonValue               :   JsonMap                                 { $$ = std::move($1); driver.log("JsonValue: JsonMap");}
                         |   JsonArray                               { $$ = std::move($1); driver.log("JsonValue: JsonArray");}
-                        |   JSON_STRING                             { $$ = JSON::Value($1); driver.log("JsonValue: JSON_STRING");}
-                        |   JSON_INT                                { $$ = JSON::Value($1); driver.log("JsonValue: JSON_INT ", $1);}
-                        |   JSON_DOUBLE                             { $$ = JSON::Value($1); driver.log("JsonValue: JSON_DOUBLE");}
-                        |   JSON_TRUE                               { $$ = JSON::Value($1); driver.log("JsonValue: JSON_TRUE");}
-                        |   JSON_FALSE                              { $$ = JSON::Value($1); driver.log("JsonValue: JSON_FALSE");}
-                        |   JSON_NULL                               { $$ = JSON::Value(); driver.log("JsonValue: JSON_NULL");}
+                        |   JSON_STRING                             { $$ = std::move(JSON::Value($1)); driver.log("JsonValue: JSON_STRING");}
+                        |   JSON_INT                                { $$ = std::move(JSON::Value($1)); driver.log("JsonValue: JSON_INT ", $1);}
+                        |   JSON_DOUBLE                             { $$ = std::move(JSON::Value($1)); driver.log("JsonValue: JSON_DOUBLE");}
+                        |   JSON_TRUE                               { $$ = std::move(JSON::Value($1)); driver.log("JsonValue: JSON_TRUE");}
+                        |   JSON_FALSE                              { $$ = std::move(JSON::Value($1)); driver.log("JsonValue: JSON_FALSE");}
+                        |   JSON_NULL                               { $$ = std::move(JSON::Value()); driver.log("JsonValue: JSON_NULL");}
 
 %%
 

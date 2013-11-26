@@ -6,6 +6,17 @@ namespace JSON {
 
 Value::Value() : type_t(NIL) { }
 
+Value::~Value() {
+    switch(type_t) {
+        case ARRAY:
+            if(array_v) delete array_v;
+            break;
+        case OBJECT:
+            if (object_v) delete object_v;
+            break;
+    }
+}
+
 Value::Value(const long i) : int_v(i), type_t(INT) { }
 
 Value::Value(const double f) : float_v(f), type_t(FLOAT) { }
@@ -49,19 +60,19 @@ Value::Value(const Value& v)
         
         /** Compound types */
             case ARRAY:
-            array_v = v.array_v;
+            array_v = new vector_t(*v.array_v);
             type_t = ARRAY;
             break;
         
         case OBJECT:
-            object_v = v.object_v;
+            object_v = new map_t(*v.object_v);
             type_t = OBJECT;
             break;
         
     }
 }
 
-Value::Value(const Value&& v)
+Value::Value( Value&& v)
 { 
     switch(v.type())
     {
@@ -93,11 +104,13 @@ Value::Value(const Value&& v)
         /** Compound types */
             case ARRAY:
             array_v = move(v.array_v);
+            v.array_v = nullptr;
             type_t = ARRAY;
             break;
         
         case OBJECT:
             object_v = move(v.object_v);
+            v.object_v = nullptr;
             type_t = OBJECT;
             break;
         
@@ -135,12 +148,12 @@ Value& Value::operator=(const Value& v)
         
         /** Compound types */
             case ARRAY:
-            array_v = v.array_v;
+            array_v = new vector_t(*v.array_v);
             type_t = ARRAY;
             break;
         
         case OBJECT:
-            object_v = v.object_v;
+            object_v = new map_t(*v.object_v);
             type_t = OBJECT;
             break;
         
@@ -150,7 +163,7 @@ Value& Value::operator=(const Value& v)
 
 }
 
-Value& Value::operator=(const Value&& v)
+Value& Value::operator=( Value&& v)
 {
     switch(v.type())
     {
@@ -182,11 +195,13 @@ Value& Value::operator=(const Value&& v)
         /** Compound types */
             case ARRAY:
             array_v = move(v.array_v);
+            v.array_v = nullptr;
             type_t = ARRAY;
             break;
         
         case OBJECT:
             object_v = move(v.object_v);
+            v.object_v = nullptr;
             type_t = OBJECT;
             break;
         
@@ -214,7 +229,7 @@ void Value::print(std::ostream& out) const {
             out << "\"" << string_v << "\""; break;
         case ARRAY:
             out << "[";
-            for(const auto& e : array_v) {
+            for(const auto& e : *array_v) {
                 if (!first)
                     out << ", ";
                 e.print(out);
@@ -224,7 +239,7 @@ void Value::print(std::ostream& out) const {
             break;
         case OBJECT:
             out << "{";
-            for(const auto& e : object_v) {
+            for(const auto& e : *object_v) {
                 if (!first)
                     out << ", ";
                 out << "\""<< e.first <<"\" : ";
@@ -236,9 +251,13 @@ void Value::print(std::ostream& out) const {
     }
 }
 
+void Value::dp() const {
+    print(std::cout);
 }
 
-std::ostream& operator<<(std::ostream& o, JSON::Value& v) {
+}
+
+std::ostream& operator<<(std::ostream& o, const JSON::Value& v) {
     v.print(o);
     return o;
 }
